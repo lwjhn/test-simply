@@ -1,0 +1,52 @@
+{
+  "model": "com.rongji.egov.test.model.Bbs",
+  "tableAlias": "Bbs",
+  "join": [
+    {
+      "model": "com.rongji.egov.test.model.MyUmsUser",
+      "tableAlias": "MyUmsUser",
+      "join": [{
+        "model": "com.rongji.egov.test.model.MyUserOrgRelate",
+        "tableAlias": "MyUserOrgRelate",
+        "on": {
+          "expression": "MyUmsUser.userNo = MyUserOrgRelate.userNo"
+        }
+      }],
+      "on": {
+        "expression": "Bbs.draftUserNo = MyUmsUser.userNo"
+      }
+    },{
+      "model": "com.rongji.egov.test.model.MyUmsOrg",
+      "tableAlias": "MyUmsOrg",
+      "on": {
+        "expression": "MyUserOrgRelate.orgNo = MyUmsOrg.orgNo"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "expression": "Bbs.subject",
+      "alias": "Subject"
+    },
+    {
+      "expression": "MyUmsOrg.orgName",
+      "alias": "orgName"
+    },
+    {
+      "expression": "MyUmsOrg.createTime",
+      "alias": "createTime"
+    },
+    {
+      "expression": "MyUmsUser.shortName",
+      "alias": "shortName"
+    },
+    {
+      "expression": "MyUmsUser.email",
+      "alias": "email"
+    }
+  ],
+  "limit": [
+    0,
+    5
+  ]
+}
