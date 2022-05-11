@@ -2,6 +2,7 @@ package com.rongji.egov.test;
 
 import com.alibaba.fastjson.JSON;
 import com.rongji.egov.datasource.DataSourceHolder;
+import com.rongji.egov.datasource.MultiDataSourceAspect;
 import com.rongji.egov.mybatis.base.builder.SQLWrapper;
 import com.rongji.egov.mybatis.base.builder.assistant.Builder;
 import com.rongji.egov.mybatis.base.mapper.BaseMapper;
@@ -9,7 +10,8 @@ import com.rongji.egov.mybatis.base.plugin.Page;
 import com.rongji.egov.mybatis.base.querier.SelectPageQuerier;
 import com.rongji.egov.mybatis.base.sql.SQLCriteria;
 import com.rongji.egov.mybatis.base.sql.SQLSelector;
-import com.rongji.egov.mybatis.base.wrapper.HashCamelMap;
+import com.rongji.egov.security.SecurityUser;
+import com.rongji.egov.security.SecurityUtils;
 import com.rongji.egov.test.model.BbsCommon;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Assert;
@@ -20,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -35,8 +36,8 @@ public class TestDatasource {
 
     @Test
     public void test1() {
-        /*SecurityUser securityUser = (SecurityUser) SecurityUtils.getPrincipal();
-        DataSourceHolder.setDataSourceType(securityUser.getSystemNo());*/
+        SecurityUser securityUser = SecurityUtils.getPrincipal();
+        DataSourceHolder.setDataSourceType(securityUser == null ? null: securityUser.getSystemNo());
 
         SQLSelector selector = Builder.register(SQLSelector::new)
                 .set(SQLSelector::setModel, BbsCommon.class)
@@ -53,11 +54,12 @@ public class TestDatasource {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    MultiDataSourceAspect.setDataSourceType(Thread.currentThread().getName().replaceAll("\\d+$",""));
                     DataSourceHolder.setDataSourceType(Thread.currentThread().getName().replaceAll("\\d+$",""));
                     Page<BbsCommon> result = baseMapper.select(new SelectPageQuerier<BbsCommon>().setResultMap(BbsCommon.class).setSqlHandler(SerializationUtils.clone(selector)));
                     System.out.println(Thread.currentThread().getName() + ": " + JSON.toJSONString(result));
                     if(result!=null && result.getList().size()>0){
-                        Assert.assertTrue(result.getList().get(0).getSubject().startsWith("none".equals(DataSourceHolder.getDataSourceType()) ? "szf" : DataSourceHolder.getDataSourceType()));
+                        Assert.assertTrue("不匹配！", result.getList().get(0).getSubject().startsWith("none".equals(DataSourceHolder.getDataSourceType()) ? "szf" : DataSourceHolder.getDataSourceType()));
                     }
                 }, type + i).start();
         });
