@@ -55,7 +55,7 @@ public class TestDatasource {
                         e.printStackTrace();
                     }
                     MultiDataSourceAspect.setDataSourceType(Thread.currentThread().getName().replaceAll("\\d+$",""));
-                    DataSourceHolder.setDataSourceType(Thread.currentThread().getName().replaceAll("\\d+$",""));
+                    //DataSourceHolder.setDataSourceType(Thread.currentThread().getName().replaceAll("\\d+$",""));
                     Page<BbsCommon> result = baseMapper.select(new SelectPageQuerier<BbsCommon>().setResultMap(BbsCommon.class).setSqlHandler(SerializationUtils.clone(selector)));
                     System.out.println(Thread.currentThread().getName() + ": " + JSON.toJSONString(result));
                     if(result!=null && result.getList().size()>0){
