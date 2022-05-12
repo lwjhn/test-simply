@@ -4,7 +4,7 @@ import com.rongji.egov.mybatis.base.annotation.Table;
 
 import java.io.Serializable;
 
-@Table(value = "EGOV_BBS")
+@Table(value = "EGOV_BBS", dac = true)
 public class BbsCommon implements Serializable {
 
     private String id;

@@ -87,12 +87,68 @@ spring:
     username: FJSZF
     password: FJSZF
   datasource-multi:
-    szf:
+    NPOA: #szf:
       driver-class-name: com.oscar.Driver
       url: jdbc:oscar://192.168.210.134:2003/OSRDB
       username: FJSZF
       password: FJSZF
 #      max-pool-size: 14
+    FZ: #sft:
+      driver-class-name: dm.jdbc.driver.DmDriver
+      url: jdbc:dm://192.168.210.77:5236
+      username: SFTOA
+      password: "123456789"
+    FJSNYNCT: #test:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.210.153:3399/xc_demo?connectTimeout=3000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      username: rjsoft
+      password: abcd1234
+  rabbitmq:
+    host: 192.168.210.129
+    port: 5672
+    username: guest
+    password: guest
+  redis:
+    host: 192.168.0.40
+    database: 10
+    port: 6379
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.0.47:2001/eureka/
+  instance:
+    metadata-map:
+      appProvider: true
+      #      private: true
+#      zone: lwjhn-dev # 区域名 随便起一个，不要直接在这复制
+#      invisible: DIFF_ZONE # 不同区域间的服务不可见（仅本区域可见）
+      startup: ${random.int}    #needed to trigger info and endpoint update after restart
+mybatis:
+  configuration:
+    database-id: shentong
+logging:
+  level:
+    com.rongji.egov: debug
+server:
+  port: 6688
+
+---
+spring:
+  profiles: test
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: com.oscar.Driver
+    url: jdbc:oscar://192.168.210.134:2003/OSRDB
+    username: FJSZF
+    password: FJSZF
+  datasource-multi:
+    szf:
+      driver-class-name: com.oscar.Driver
+      url: jdbc:oscar://192.168.210.134:2003/OSRDB
+      username: FJSZF
+      password: FJSZF
+    #      max-pool-size: 14
     sft:
       driver-class-name: dm.jdbc.driver.DmDriver
       url: jdbc:dm://192.168.210.77:5236
@@ -128,3 +184,4 @@ logging:
     com.rongji.egov: debug
 server:
   port: 6688
+

@@ -36,9 +36,6 @@ public class TestDatasource {
 
     @Test
     public void test1() {
-        SecurityUser securityUser = SecurityUtils.getPrincipal();
-        DataSourceHolder.setDataSourceType(securityUser == null ? null: securityUser.getSystemNo());
-
         SQLSelector selector = Builder.register(SQLSelector::new)
                 .set(SQLSelector::setModel, BbsCommon.class)
                 .set(SQLSelector::setFields, SQLWrapper.getSqlFields(BbsCommon.class))

@@ -1,6 +1,7 @@
 package com.rongji.egov.test;
 
 import com.rongji.egov.app.support.AppSupportConfiguration;
+import com.rongji.egov.datasource.MultiDataSourceAspect;
 import com.rongji.egov.mybatis.base.annotation.ModelScan;
 import com.rongji.egov.mybatis.web.interceptor.AclLoaderFilter;
 import com.rongji.egov.mybatis.web.interceptor.NormalInterceptor;
