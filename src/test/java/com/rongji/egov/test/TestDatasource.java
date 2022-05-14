@@ -8,12 +8,9 @@ import com.rongji.egov.mybatis.base.builder.assistant.Builder;
 import com.rongji.egov.mybatis.base.builder.assistant.LambdaHelper;
 import com.rongji.egov.mybatis.base.mapper.BaseMapper;
 import com.rongji.egov.mybatis.base.plugin.Page;
-import com.rongji.egov.mybatis.base.querier.SelectOneQuerier;
 import com.rongji.egov.mybatis.base.querier.SelectPageQuerier;
-import com.rongji.egov.mybatis.base.querier.UpdateQuerier;
 import com.rongji.egov.mybatis.base.sql.SQLCriteria;
 import com.rongji.egov.mybatis.base.sql.SQLSelector;
-import com.rongji.egov.mybatis.base.sql.SQLUpdater;
 import com.rongji.egov.security.SecurityUser;
 import com.rongji.egov.security.ServiceSecurityUser;
 import com.rongji.egov.test.model.BbsCommon;
@@ -29,14 +26,10 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.function.Function;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
