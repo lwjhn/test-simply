@@ -37,6 +37,7 @@ public class TestSimply {
 
     @Resource
     ObjectMapper objectMapper;
+
     @Test
     public void testSolr() throws Exception {
         /*
