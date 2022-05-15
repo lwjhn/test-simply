@@ -30,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -60,7 +61,7 @@ public class TestDatasource {
             LOGGER.debug("===== 2. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
             testBbsService.updateBbs("MM3d8604168b3000", bbsCommon1 -> {
                 LOGGER.debug("===== 3. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
-                return bbsCommon1;
+                return null;
             });
             LOGGER.debug("===== 4. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
             return bbsCommon;
@@ -102,5 +103,9 @@ public class TestDatasource {
                         .build()), null));
     }
 
-
+    @Test
+    public void test2(){
+        Set<Object> holders = DataSourceHandler.targetDataSourceHolders();
+        System.out.println(JSON.toJSONString(holders));
+    }
 }
