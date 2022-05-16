@@ -61,7 +61,7 @@ public class TestDatasource {
             LOGGER.debug("===== 2. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
             testBbsService.updateBbs("MM3d8604168b3000", bbsCommon1 -> {
                 LOGGER.debug("===== 3. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
-                return null;
+                return bbsCommon1;
             });
             LOGGER.debug("===== 4. testTransaction: {} => {} =====", DataSourceHolder.getDataSourceType(), DataSourceHandler.handler());
             return bbsCommon;
@@ -72,7 +72,8 @@ public class TestDatasource {
     @Test
     public void test1() {
         SQLSelector selector = selector();
-        Arrays.asList("szf","test","sft", "none").forEach(type -> {
+        DataSourceHandler.targetDataSourceHolders().forEach(type -> {
+            LOGGER.debug("=== NEW THEAD FOR DATASOURCE {} ===", type);
             for (int i = 0; i < 100; i++)
                 new Thread(() -> {
                     try {
@@ -89,7 +90,7 @@ public class TestDatasource {
                     if(result!=null && result.getList().size()>0){
                         Assert.assertTrue("不匹配！", result.getList().get(0).getSubject().startsWith("none".equals(DataSourceHolder.getDataSourceType()) ? "szf" : DataSourceHolder.getDataSourceType()));
                     }
-                }, type + i).start();
+                }, type.toString() + i).start();
         });
     }
 
@@ -105,7 +106,6 @@ public class TestDatasource {
 
     @Test
     public void test2(){
-        Set<Object> holders = DataSourceHandler.targetDataSourceHolders();
-        System.out.println(JSON.toJSONString(holders));
+
     }
 }
