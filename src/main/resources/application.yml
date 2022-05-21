@@ -149,6 +149,7 @@ spring:
 
   #  datasource-multi-mapper-pointcut: execution(* com.rongji.egov.mybatis.base.mapper.*Mapper.*(..))
   datasource-multi-enable: true
+  datasource-multi-default-holder: ROOT
 #  datasource:
 #    # 特定连接池
 #    type: com.alibaba.druid.pool.DruidDataSource
