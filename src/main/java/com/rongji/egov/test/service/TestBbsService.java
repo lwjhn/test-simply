@@ -1,6 +1,6 @@
 package com.rongji.egov.test.service;
 
-import com.rongji.egov.datasource.DataSourceHolder;
+import com.rongji.egov.datasource.DataSourceHandler;
 import com.rongji.egov.mybatis.base.builder.SQLWrapper;
 import com.rongji.egov.mybatis.base.builder.assistant.Builder;
 import com.rongji.egov.mybatis.base.builder.assistant.LambdaHelper;
@@ -34,13 +34,12 @@ public class TestBbsService {
                 .set(SQLSelector::setModel, BbsCommon.class)
                 .set(SQLSelector::setFields, SQLWrapper.getSqlFields(BbsCommon.class))
                 .set(SQLSelector::setWhere, new SQLCriteria(LambdaHelper.fieldName(BbsCommon::getId) + "=?", id))
-                .set(SQLSelector::setLimit, 0, 5)
                 .build();
         BbsCommon bbsCommon = baseMapper.select(new SelectOneQuerier<BbsCommon>().setResultMap(BbsCommon.class).setSqlHandler(selector));
-
-        bbsCommon.setSubject(DataSourceHolder.getDataSourceType() + "===test transaction===" + new Date());
+        LOGGER.debug("====updateBbs=> DataSourceHandler.get() {} ===", DataSourceHandler.get());
+        bbsCommon.setSubject(DataSourceHandler.get() + "===test transaction===" + new Date());
         baseMapper.update(new UpdateQuerier().setSqlHandler(new SQLUpdater(BbsCommon.class, bbsCommon, new SQLCriteria("id = ?", bbsCommon.getId()))));
-        bbsCommon = caller==null ? null : caller.apply(bbsCommon);
+        bbsCommon = caller==null ? bbsCommon : caller.apply(bbsCommon);
 
         System.out.println("update doc : " + bbsCommon.getId());
     }
