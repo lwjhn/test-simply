@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         ClientConfiguration.class,
         UserClientConfiguration.class,
         AppSupportConfiguration.class,
-        MybatisConfiguration.class,
         IgnoredPathsConfiguration.class
 })
 public class TestSimplyWebConfiguration {

@@ -38,6 +38,11 @@ public class TestDatasourceCloud {
     BaseMapper baseMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(TestDatasourceCloud.class);
 
+    @Test
+    public void test3(){
+
+    }
+
     public SQLSelector selector() {
         return Builder.register(SQLSelector::new)
                 .set(SQLSelector::setModel, BbsCommon.class)
@@ -81,7 +86,7 @@ public class TestDatasourceCloud {
     public void test2() {
         InputStream is = null;
         try {
-            is = TestDatasourceCloud.class.getClassLoader().getResourceAsStream("test111.yml");
+            is = TestDatasourceCloud.class.getClassLoader().getResourceAsStream("file/test111.yml1");
             Yaml yaml= new Yaml();
             Object o = yaml.load(is);
 
