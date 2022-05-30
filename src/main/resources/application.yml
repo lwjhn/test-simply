@@ -2,7 +2,7 @@ spring:
   profiles:
     active: default
   config:
-    location: http://192.168.0.42/zhuanglw/config/raw/master/rjegov80/common.sec
+    location: http://192.168.0.42/zhuanglw/config/raw/master/rjegov80/test.sec
   application:
     name: testsimply
 server:
