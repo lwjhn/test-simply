@@ -39,7 +39,7 @@ public class TestCopyRmsResource {
 
     @Test
     public void testQuery() {
-        migrationRmsResource();
+        //migrationRmsResource();
     }
 
     public void migrationRmsResource() {
