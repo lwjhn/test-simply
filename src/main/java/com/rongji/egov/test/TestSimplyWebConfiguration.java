@@ -9,7 +9,6 @@ import com.rongji.egov.test.filter.DefaultAclLoaderFilter;
 import com.rongji.egov.test.filter.DefaultNormalInterceptor;
 import com.rongji.egov.test.model.Bbs;
 import com.rongji.egov.user.client.UserClientConfiguration;
-import com.rongji.egov.utils.mybatis.configuration.MybatisConfiguration;
 import com.rongji.egov.utils.spring.configuration.ClientConfiguration;
 import com.rongji.egov.utils.spring.configuration.IgnoredPathsConfiguration;
 import com.rongji.egov.utils.spring.configuration.WebConfiguration;
