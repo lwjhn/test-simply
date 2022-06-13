@@ -16,7 +16,6 @@ import com.rongji.egov.mybatis.base.sql.SQLInserter;
 import com.rongji.egov.mybatis.base.sql.SQLSelector;
 import com.rongji.egov.test.model.RmsResource;
 import com.rongji.egov.utils.common.IdUtil;
-import org.assertj.core.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
