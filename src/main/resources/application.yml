@@ -40,13 +40,13 @@ spring:
     driver-class-name: com.kingbase8.Driver
     url: jdbc:kingbase8://192.168.210.80:54321/EGOV
     username: RJEGOV
-    password: "123456789"
+    password: 123456789
   datasource-multi:
     TZBOA:
       driver-class-name: com.kingbase8.Driver
       url: jdbc:kingbase8://192.168.210.80:54321/EGOV
       username: TZBOA
-      password: "123456789"
+      password: 123456789
     FJSNYNCT:
       aliases: NPSWB
       driver-class-name: dm.jdbc.driver.DmDriver

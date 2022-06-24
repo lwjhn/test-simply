@@ -79,22 +79,23 @@ public class TestDatasource {
         LOGGER.debug("======holders : {} =======", DataSourceHandler.targetDataSourceHolders().stream().map(String::valueOf).collect(Collectors.joining(", ")));
         DataSourceHandler.targetDataSourceHolders().forEach(type -> {
             LOGGER.debug("=== NEW THEAD FOR DATASOURCE {} ===", type);
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1; i++)
                 new Thread(() -> {
                     try {
                         Thread.sleep((long) (2000 * Math.random()));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //DataSourceHandler.set(Thread.currentThread().getName().replaceAll("\\d+$",""));
-                    setTestingAuthenticationToken("U" + Math.round(Math.random() * 100000),
-                            Thread.currentThread().getName().replaceAll("\\d+$", ""));
+                        setTestingAuthenticationToken("U" + Math.round(Math.random() * 100000),
+                                Thread.currentThread().getName().replaceAll("\\d+$", ""));
+                        //DataSourceHandler.set(Thread.currentThread().getName().replaceAll("\\d+$",""));
 
-                    Page<BbsCommon> result = baseMapper.select(new SelectPageQuerier<BbsCommon>().setResultMap(BbsCommon.class).setSqlHandler(SerializationUtils.clone(selector)));
-                    System.out.println(Thread.currentThread().getName() + ": " + JSON.toJSONString(result));
-                    if (result != null && result.getList().size() > 0) {
-                        Assert.assertTrue("不匹配！", result.getList().get(0).getSubject().startsWith("none".equals(DataSourceHolder.getDataSourceType()) ? "szf" : DataSourceHolder.getDataSourceType()));
+                        Page<BbsCommon> result = baseMapper.select(new SelectPageQuerier<BbsCommon>().setResultMap(BbsCommon.class).setSqlHandler(SerializationUtils.clone(selector)));
+                        System.out.println(Thread.currentThread().getName() + ": " + JSON.toJSONString(result));
+                        if (result != null && result.getList().size() > 0) {
+                            Assert.assertTrue("不匹配！", result.getList().get(0).getSubject().startsWith("none".equals(DataSourceHolder.getDataSourceType()) ? "szf" : DataSourceHolder.getDataSourceType()));
+                        }
+                    } catch (InterruptedException e) {
+                        LOGGER.error("{} : {}",Thread.currentThread().getName(), e.getMessage());
                     }
+
                 }, type.toString() + i).start();
         });
     }
