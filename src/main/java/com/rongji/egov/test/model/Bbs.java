@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(value = "EGOV_BBS", dac = true)
 public class Bbs implements Serializable {
 
-    private String id;
+    public String id;
 
     private String content;
 

@@ -1,5 +1,12 @@
 package com.rongji.egov.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rongji.egov.mybatis.base.builder.SQLWrapper;
+import com.rongji.egov.mybatis.base.builder.assistant.function.UniFunction;
+import com.rongji.egov.mybatis.base.pattern.SQLFactory;
+import com.rongji.egov.mybatis.base.sql.SQLCriteria;
+import com.rongji.egov.mybatis.base.sql.SQLSelector;
+import com.rongji.egov.test.model.Bbs;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +20,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -28,6 +37,25 @@ public class TestEnv {
     public void test12() throws Exception {
         LOGGER.debug("spring.profiles.active: {} , spring.datasource-multi-enable: {}", environment.getProperty("spring.profiles.active"),
                 environment.getProperty("spring.datasource-multi-enable"));
+    }
+
+    @Test
+    public void test33() throws Exception {
+        SQLCriteria criteria = SQLWrapper.WRAPPER.and()
+                .like(Bbs::getId, "abcd")
+                .like(SQLWrapper.field(Bbs::getSubject), "测试")
+                .or()
+                .eq(SQLWrapper.field(Bbs::getDraftDeptNo), "D000001")
+                .likeRight(true, "draftUserNo", "D000")
+                .lt(SQLWrapper.field(Bbs::getCreateDate), new Date())
+                .ge(Bbs::getCreateDate, "2011-01-01")
+                .not()
+                .isNotNull(Bbs::getStatus).end();
+        System.out.println(SQLFactory.generate(
+                SQLWrapper.builder(() -> SQLWrapper.selectors(Bbs.class))
+                        .set(SQLSelector::setWhere, criteria)
+                        .build()
+        ));
     }
 
     @Test

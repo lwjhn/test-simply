@@ -45,8 +45,8 @@ public class TestToken {
 
     @Test
     public void gen() throws IOException {
-        //this.generate("U000000", "ROOT", "D00000", Collections.singletonList(new SimpleGrantedAuthority("ROLE_sys_manager")));
-        this.generate("U003564", "TZBOA", "D03192", Collections.singletonList(new SimpleGrantedAuthority("ROLE_sys_manager")));
+        this.generate("U000000", "ROOT", "D00000", Collections.singletonList(new SimpleGrantedAuthority("ROLE_sys_manager")));
+        //this.generate("U003564", "TZBOA", "D03192", Collections.singletonList(new SimpleGrantedAuthority("ROLE_sys_manager")));
     }
 
     public void generate(String user, String systemNo, String orgNo, Collection<? extends GrantedAuthority> authorities) throws IOException {
