@@ -1,9 +1,27 @@
 package com.rongji.egov.test;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rongji.egov.datasource.DataSourceHandler;
+import com.rongji.egov.datasource.DataSourceHolder;
+import com.rongji.egov.mybatis.base.builder.SQLWrapper;
+import com.rongji.egov.mybatis.base.builder.assistant.Builder;
+import com.rongji.egov.mybatis.base.builder.assistant.LambdaHelper;
 import com.rongji.egov.mybatis.base.mapper.BaseMapper;
+import com.rongji.egov.mybatis.base.plugin.Page;
+import com.rongji.egov.mybatis.base.querier.SelectListQuerier;
+import com.rongji.egov.mybatis.base.querier.SelectPageQuerier;
+import com.rongji.egov.mybatis.base.querier.SelectQuerier;
+import com.rongji.egov.mybatis.base.serializer.blob.Blob2StringSerializerModifier;
+import com.rongji.egov.mybatis.base.sql.SQLCriteria;
+import com.rongji.egov.mybatis.base.sql.SQLSelector;
 import com.rongji.egov.mybatis.base.utils.AutoCloseableBase;
 import com.rongji.egov.mybatis.base.wrapper.HashCamelMap;
+import com.rongji.egov.test.model.Approval;
+import com.rongji.egov.test.model.BbsCommon;
+import com.rongji.egov.test.serializer.PrestoArray2StringSerializerModifier;
+import org.apache.commons.lang3.SerializationUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,10 +35,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,6 +54,68 @@ public class TestDbMetaData {
     DataSource dataSource;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestDbMetaData.class);
+
+    @Test
+    public void testPresto() {
+        LOGGER.debug("======holders : {} =======", DataSourceHandler.targetDataSourceHolders().stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        DataSourceHolder.setDataSourceType("PRESTO");
+        DataSourceHandler.set("PRESTO");
+        try(Connection connection = dataSource.getConnection()){
+            DatabaseMetaData metaData = connection.getMetaData();
+            LOGGER.debug("数据库已知的用户: {}", metaData.getUserName());
+            LOGGER.debug("数据库的系统函数的逗号分隔列表: {}", metaData.getSystemFunctions());
+            LOGGER.debug("数据库的时间和日期函数的逗号分隔列表: {}", metaData.getTimeDateFunctions());
+            LOGGER.debug("数据库的字符串函数的逗号分隔列表: {} ", metaData.getStringFunctions());
+            LOGGER.debug("数据库供应商用于 'schema' 的首选术语: {}", metaData.getSchemaTerm());
+            LOGGER.debug("数据库URL: {}", metaData.getURL());
+            LOGGER.debug("是否允许只读: {}", metaData.isReadOnly());
+            LOGGER.debug("数据库的产品名称: {}", metaData.getDatabaseProductName());
+            LOGGER.debug("数据库的版本: {}", metaData.getDatabaseProductVersion());
+            LOGGER.debug("驱动程序的名称: {}", metaData.getDriverName());
+            LOGGER.debug("驱动程序的版本: {}", metaData.getDriverVersion());
+
+            SQLSelector selector = Builder.register(SQLSelector::new)
+                    .set(SQLSelector::setModel, Approval.class)
+                    .set(SQLSelector::setFields, SQLWrapper.getSqlFields(Approval.class))
+                    .set(SQLSelector::setWhere, new SQLCriteria("contains(readers, ?)", "D00008_csfzr"))
+//                    .set(SQLSelector::setLimit, 0, 5)
+                    .build();
+
+            Page<Approval> result = baseMapper.select(new SelectPageQuerier<Approval>().setResultMap(Approval.class).setSqlHandler(SerializationUtils.clone(selector)));
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializerFactory(
+                    objectMapper.getSerializerFactory().withSerializerModifier(new PrestoArray2StringSerializerModifier(objectMapper)));
+
+
+            System.out.println(objectMapper.writeValueAsString(result));
+
+            selector = objectMapper.readValue("{\n" +
+                    "  \"model\": \"com.rongji.egov.test.model.Approval\",\n" +
+                    "  \"fields\": [\n" +
+                    "    {\n" +
+                    "      \"expression\": \"draftuserunit\",\n" +
+                    "      \"alias\": \"draftuserunit\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"expression\": \"flowStatus\",\n" +
+                    "      \"alias\": \"flowStatus\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"expression\": \"count(1)\",\n" +
+                    "      \"alias\": \"count\"\n" +
+                    "    }\n" +
+                    "  ],\n" +
+                    "  \"group\": \"draftuserunit, flowstatus\"\n" +
+                    "}", SQLSelector.class);
+
+            List<HashMap> result1 = baseMapper.select(new SelectListQuerier<HashMap>().setResultMap(HashMap.class).setSqlHandler(SerializationUtils.clone(selector)));
+
+            System.out.println(objectMapper.writeValueAsString(result1));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     public void query() {

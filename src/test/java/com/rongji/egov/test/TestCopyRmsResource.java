@@ -14,7 +14,10 @@ import com.rongji.egov.mybatis.base.sql.SQLCriteria;
 import com.rongji.egov.mybatis.base.sql.SQLField;
 import com.rongji.egov.mybatis.base.sql.SQLInserter;
 import com.rongji.egov.mybatis.base.sql.SQLSelector;
+import com.rongji.egov.test.model.CodeRepository;
+import com.rongji.egov.test.model.DsSetting;
 import com.rongji.egov.test.model.RmsResource;
+import com.rongji.egov.test.model.TableSetting;
 import com.rongji.egov.utils.common.IdUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +42,45 @@ public class TestCopyRmsResource {
     @Test
     public void testQuery() {
         //migrationRmsResource();
+//        migration("EGOV80", "STD23", CodeRepository.class, null);
+        migration("EGOV80", "STD23", DsSetting.class, null);
+        migration("EGOV80", "STD23", TableSetting.class, null);
     }
+
+    public void migration(String sourceHolder, String targetHolder, Class<?> model, SQLCriteria sqlCriteria) {
+        DataSourceHandler.set(sourceHolder);
+        Page<?> page = baseMapper.select(new SelectOneQuerier<Page<?>>().setResultMap(Page.class).setSqlHandler(Builder.register(SQLSelector::new)
+                .set(SQLSelector::setModel, model)
+                .set(SQLSelector::setFields, Collections.singletonList(new SQLField("count(1)", LambdaHelper.fieldName((UniFunction<Page<?>, Object>) Page::getTotal))))
+                .set(SQLSelector::setWhere, sqlCriteria)
+                .build()));
+        final int total = page.getTotal();
+        LOGGER.info("total: {}", page.getTotal());
+
+        final int row = 5;
+        SQLSelector selector = Builder.register(SQLSelector::new)
+                .set(SQLSelector::setModel, model)
+                .set(SQLSelector::setFields, SQLWrapper.getSqlFields(model))
+                .set(SQLSelector::setLimit, 0, row)
+                .set(SQLSelector::setWhere, sqlCriteria)
+                .build();
+        SelectListQuerier<Object> querier = (SelectListQuerier<Object>) new SelectListQuerier<Object>().setResultMap(model).setSqlHandler(selector);
+
+//        LOGGER.debug("total: {}", page.getTotal());
+        int suc = 0;
+        for (int i = 0; i < total; i += row) {
+            selector.setLimit(i, row);
+            DataSourceHandler.set(sourceHolder);
+            List<Object> response = baseMapper.select(querier);
+            LOGGER.info("offset: {}, rows: {}", i, response.size());
+            DataSourceHandler.set(targetHolder);
+            for (Object code : response) {
+                suc += baseMapper.update(new UpdateQuerier().setSqlHandler(new SQLInserter(code)));
+            }
+        }
+        LOGGER.info("total: {}, success: {}", page.getTotal(), suc);
+    }
+
 
     public void migrationRmsResource() {
         final String sourceHolder = "SFTOA",

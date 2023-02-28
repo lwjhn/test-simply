@@ -3,10 +3,8 @@ package com.rongji.egov.test;
 import com.rongji.egov.app.support.AppSupportConfiguration;
 import com.rongji.egov.mybatis.base.annotation.ModelScan;
 import com.rongji.egov.mybatis.web.interceptor.AclLoaderFilter;
-import com.rongji.egov.mybatis.web.interceptor.NormalInterceptor;
 import com.rongji.egov.security.service.SecurityServiceConfiguration;
 import com.rongji.egov.test.filter.DefaultAclLoaderFilter;
-import com.rongji.egov.test.filter.DefaultNormalInterceptor;
 import com.rongji.egov.test.model.Bbs;
 import com.rongji.egov.user.client.UserClientConfiguration;
 import com.rongji.egov.utils.spring.configuration.ClientConfiguration;
@@ -40,10 +38,5 @@ public class TestSimplyWebConfiguration {
     @Bean
     public AclLoaderFilter aclLoaderFilter() {
         return new DefaultAclLoaderFilter();
-    }
-
-    @Bean
-    public NormalInterceptor normalInterceptor() {
-        return new DefaultNormalInterceptor();
     }
 }
