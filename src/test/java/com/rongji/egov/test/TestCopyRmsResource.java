@@ -43,8 +43,8 @@ public class TestCopyRmsResource {
     public void testQuery() {
         //migrationRmsResource();
 //        migration("EGOV80", "STD23", CodeRepository.class, null);
-        migration("EGOV80", "STD23", DsSetting.class, null);
-        migration("EGOV80", "STD23", TableSetting.class, null);
+//        migration("EGOV80", "STD23", DsSetting.class, null);
+//        migration("EGOV80", "STD23", TableSetting.class, null);
     }
 
     public void migration(String sourceHolder, String targetHolder, Class<?> model, SQLCriteria sqlCriteria) {
