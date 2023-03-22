@@ -3,9 +3,7 @@ package com.rongji.egov.test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rongji.egov.datasource.DataSourceHandler;
-import com.rongji.egov.mybatis.base.builder.SQLexp;
 import com.rongji.egov.mybatis.base.builder.assistant.Builder;
-import com.rongji.egov.mybatis.base.builder.assistant.LambdaHelper;
 import com.rongji.egov.mybatis.base.plugin.Page;
 import com.rongji.egov.mybatis.base.sql.SQLCriteria;
 import com.rongji.egov.mybatis.base.sql.SQLSelector;
@@ -46,15 +44,6 @@ public class TestHelper {
     ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestHelper.class);
-
-    public SQLSelector selector() {
-        return Builder.register(SQLSelector::new)
-                .set(SQLSelector::setModel, BbsCommon.class)
-                .set(SQLSelector::setFields, SQLexp.getSqlFields(BbsCommon.class))
-                .set(SQLSelector::setWhere, new SQLCriteria(LambdaHelper.fieldName(BbsCommon::getSubject) + " LIKE ?", "%7881596096100CA5482586FB000BBFD8%"))
-                .set(SQLSelector::setLimit, 0, 5)
-                .build();
-    }
 
     @Test
     public void test1() throws JsonProcessingException {
