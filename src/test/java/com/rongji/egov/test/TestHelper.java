@@ -3,7 +3,7 @@ package com.rongji.egov.test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rongji.egov.datasource.DataSourceHandler;
-import com.rongji.egov.mybatis.base.builder.SQLWrapper;
+import com.rongji.egov.mybatis.base.builder.SQLexp;
 import com.rongji.egov.mybatis.base.builder.assistant.Builder;
 import com.rongji.egov.mybatis.base.builder.assistant.LambdaHelper;
 import com.rongji.egov.mybatis.base.plugin.Page;
@@ -50,7 +50,7 @@ public class TestHelper {
     public SQLSelector selector() {
         return Builder.register(SQLSelector::new)
                 .set(SQLSelector::setModel, BbsCommon.class)
-                .set(SQLSelector::setFields, SQLWrapper.getSqlFields(BbsCommon.class))
+                .set(SQLSelector::setFields, SQLexp.getSqlFields(BbsCommon.class))
                 .set(SQLSelector::setWhere, new SQLCriteria(LambdaHelper.fieldName(BbsCommon::getSubject) + " LIKE ?", "%7881596096100CA5482586FB000BBFD8%"))
                 .set(SQLSelector::setLimit, 0, 5)
                 .build();
@@ -74,12 +74,10 @@ public class TestHelper {
     @Test
     public void testDac() throws JsonProcessingException {
         DataSourceHandler.set("default");
-
         setTestingAuthenticationToken("U000032", "BIGDATA");
 
         DacQuerySample<BbsCommon> query = helper.dac(BbsCommon.class).reset();
         Acl acl = query.getAcl();
-
         test(query);
     }
 
@@ -114,13 +112,13 @@ public class TestHelper {
         query.insert(bbsCommon);
 
         // list
-        List<BbsCommon> list = query.selectList(Helper.WRAPPER.or()
+        List<BbsCommon> list = query.selectList(Helper.exp.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end());
         LOGGER.info("{}", objectMapper.writeValueAsString(list));
 
         // list => limit 0, 20
-        list = query.selectList(Helper.WRAPPER.or()
+        list = query.selectList(Helper.exp.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end(), handle -> {
             handle.getSqlHandler().setLimit(0, 20);
@@ -133,13 +131,13 @@ public class TestHelper {
         LOGGER.info("{}", objectMapper.writeValueAsString(page));
 
         // page
-        page = query.selectPage(Helper.WRAPPER.or()
+        page = query.selectPage(Helper.exp.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end());
         LOGGER.info("{}", objectMapper.writeValueAsString(page));
 
         // list => limit 10, 15
-        page = query.selectPage(Helper.WRAPPER.or()
+        page = query.selectPage(Helper.exp.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end(), handle -> {
             SQLSelector selector = handle.getSqlHandler();
