@@ -57,15 +57,26 @@ public class TestHelper {
     }
 
     @Test
+    public void test1() throws JsonProcessingException {
+        DataSourceHandler.set("default");
+
+        setTestingAuthenticationToken("U000032", "BIGDATA");
+
+        BbsCommon bbsCommon = helper.dac(BbsCommon.class).reset()
+                .selectByPrimaryKey("154c74b4194a0000");
+        LOGGER.info("{}", objectMapper.writeValueAsString(bbsCommon));
+    }
+
+    @Test
     public void testDac() throws JsonProcessingException {
         DataSourceHandler.set("default");
 
         setTestingAuthenticationToken("U000032", "BIGDATA");
 
-        DacQuerySample<BbsCommon> querySample = helper.dac(BbsCommon.class).reset();
-        Acl acl = querySample.getAcl();
+        DacQuerySample<BbsCommon> query = helper.dac(BbsCommon.class).reset();
+        Acl acl = query.getAcl();
 
-        test(querySample);
+        test(query);
     }
 
     @Test
@@ -74,34 +85,34 @@ public class TestHelper {
         test(helper.nac(BbsCommon.class));
     }
 
-    public void test(DefaultQuerySample<BbsCommon> querySample) throws JsonProcessingException {
-        BbsCommon bbsCommon = querySample.selectByPrimaryKey("154c74b4194a0000");
+    public void test(DefaultQuerySample<BbsCommon> query) throws JsonProcessingException {
+        BbsCommon bbsCommon = query.selectByPrimaryKey("154c74b4194a0000");
         LOGGER.info("{}", objectMapper.writeValueAsString(bbsCommon));
 
         bbsCommon.setSubject("测试通知-" + new Date().getTime());
-        LOGGER.info("update count: {}", querySample.updateByPrimaryKey(bbsCommon));
+        LOGGER.info("update count: {}", query.updateByPrimaryKey(bbsCommon));
 
-        bbsCommon = querySample.selectByPrimaryKey(bbsCommon.getId());
+        bbsCommon = query.selectByPrimaryKey(bbsCommon.getId());
         LOGGER.info("{}", objectMapper.writeValueAsString(bbsCommon));
 
         bbsCommon.setSubject(bbsCommon.getSubject() + "-" + new Date().getTime());
         bbsCommon.setContent(null);
-        LOGGER.info("update count: {}", querySample.updateByPrimaryKey(Helper.toMapNonNull(bbsCommon)));
+        LOGGER.info("update count: {}", query.updateByPrimaryKey(Helper.toMapNonNull(bbsCommon)));
 
         // insert
         bbsCommon = SerializationUtils.clone(bbsCommon);
         bbsCommon.setId(IdUtil.getUID());
         LOGGER.info("insert id : {}", bbsCommon.getId());
-        querySample.insert(bbsCommon);
+        query.insert(bbsCommon);
 
         // list
-        List<BbsCommon> list = querySample.selectList(Helper.WRAPPER.or()
+        List<BbsCommon> list = query.selectList(Helper.WRAPPER.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end());
         LOGGER.info("{}", objectMapper.writeValueAsString(list));
 
         // list => limit 0, 20
-        list = querySample.selectList(Helper.WRAPPER.or()
+        list = query.selectList(Helper.WRAPPER.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end(), handle -> {
             handle.getSqlHandler().setLimit(0, 20);
@@ -109,18 +120,18 @@ public class TestHelper {
         LOGGER.info("{}", objectMapper.writeValueAsString(list));
 
         // page
-        Page<BbsCommon> page = querySample.selectPage(new SQLCriteria(
+        Page<BbsCommon> page = query.selectPage(new SQLCriteria(
                 "subject like ? or subject like ?", Arrays.asList("%测试%", "%通知%")));
         LOGGER.info("{}", objectMapper.writeValueAsString(page));
 
         // page
-        page = querySample.selectPage(Helper.WRAPPER.or()
+        page = query.selectPage(Helper.WRAPPER.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end());
         LOGGER.info("{}", objectMapper.writeValueAsString(page));
 
         // list => limit 10, 15
-        page = querySample.selectPage(Helper.WRAPPER.or()
+        page = query.selectPage(Helper.WRAPPER.or()
                 .like(BbsCommon::getSubject, "%测试%")
                 .like(BbsCommon::getSubject, "%通知%").end(), handle -> {
             SQLSelector selector = handle.getSqlHandler();
