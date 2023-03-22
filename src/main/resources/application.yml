@@ -93,9 +93,13 @@ spring:
 #      #      private: true
 #      zone: lwjhn-dev # 区域名 随便起一个，不要直接在这复制
 #      invisible: DIFF_ZONE # 不同区域间的服务不可见（仅本区域可见）
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.210.129:2001/eureka/
 logging:
   level:
-    com.rongji.egov: info
+    com.rongji.egov: debug
 server:
   port: 6688
 
