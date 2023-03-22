@@ -67,6 +67,10 @@ public class TestHelper {
         LOGGER.info("{}", objectMapper.writeValueAsString(bbsCommon));
     }
 
+    /**
+     * DAC，自主权限控制
+     * @throws JsonProcessingException
+     */
     @Test
     public void testDac() throws JsonProcessingException {
         DataSourceHandler.set("default");
@@ -79,6 +83,10 @@ public class TestHelper {
         test(query);
     }
 
+    /**
+     * 普通CRUD
+     * @throws JsonProcessingException
+     */
     @Test
     public void testQuery() throws JsonProcessingException {
         DataSourceHandler.set("default");
